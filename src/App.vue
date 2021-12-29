@@ -16,7 +16,7 @@
 <script>
 
 import Navbar from '@/components/Navbar';
-
+import './style.css'
 export default {
   name: 'App',
   components: {

@@ -29,7 +29,14 @@ export default new Router({
       path: '*',
       name: 'NotFound',
       component: NotFound
-    }
+    },
+    
+  {
+    path: '/register-shipper',
+    name: 'RegisterShipper',
+
+    component: () => import(/* webpackChunkName: "about" */ '../views/RegisterShipper.vue')
+  }
 
   ]
 })
