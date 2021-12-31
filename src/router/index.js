@@ -30,13 +30,18 @@ export default new Router({
       name: 'NotFound',
       component: NotFound
     },
-    
+
   {
     path: '/register-shipper',
     name: 'RegisterShipper',
 
     component: () => import(/* webpackChunkName: "about" */ '../views/RegisterShipper.vue')
-  }
+  },
+  {
+    path: '/submit-trouble',
+    name: 'SubmitTrouble',
+    component: () => import(/* webpackChunkName: "about" */ '../views/SubmitTrouble.vue')
 
+  }
   ]
 })

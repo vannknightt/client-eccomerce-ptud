@@ -11,12 +11,14 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 
 import Axios from 'axios';
 
+
 Vue.config.productionTip = false
 Axios.defaults.baseURL = process.env.API_ENDPOINT;
 
 
 Vue.use(BootstrapVue);
 Vue.use(Vuex)
+
 
 /* eslint-disable no-new */
 new Vue({
