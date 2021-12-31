@@ -4,6 +4,7 @@ const axiosClient = axios.create({
   baseURL: "https://d2h-backend-server.herokuapp.com",
   headers: {
     "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*"
   },
   params: {},
 });
