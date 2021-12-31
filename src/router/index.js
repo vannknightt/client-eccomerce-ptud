@@ -1,47 +1,60 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from '@/components/Home';
-import ProductList from '@/components/Product/ProductList';
-import CartDisplay from '@/components/Product/CartDisplay';
-import NotFound from '@/components/error-pages/NotFound';
+import Vue from "vue";
+import Router from "vue-router";
+import Home from "@/components/Home";
+import ProductList from "@/components/Product/ProductList";
+import CartDisplay from "@/components/Product/CartDisplay";
+import NotFound from "@/components/error-pages/NotFound";
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
-  mode:'history',
+  mode: "history",
   routes: [
     {
-      path: '/home',
-      name: 'Home',
+      path: "/",
+      name: "Home",
       component: Home
     },
     {
-      path: '/product/list',
-      name: 'ProductList',
+      path: "/home",
+      redirect: "/"
+    },
+    {
+      path: "/product/list",
+      name: "ProductList",
       component: ProductList
     },
     {
-      path: '/cart',
-      name: 'CartDisplay',
+      path: "/cart",
+      name: "CartDisplay",
       component: CartDisplay
     },
     {
-      path: '*',
-      name: 'NotFound',
+      path: "*",
+      name: "NotFound",
       component: NotFound
     },
 
-  {
-    path: '/register-shipper',
-    name: 'RegisterShipper',
+    {
+      path: "/register-shipper",
+      name: "RegisterShipper",
 
-    component: () => import(/* webpackChunkName: "about" */ '../views/RegisterShipper.vue')
-  },
-  {
-    path: '/submit-trouble',
-    name: 'SubmitTrouble',
-    component: () => import(/* webpackChunkName: "about" */ '../views/SubmitTrouble.vue')
+      component: () =>
+        import(/* webpackChunkName: "about" */ "../views/ShipperForm.vue")
+    },
+    {
+      path: "/shipper/:id",
+      name: "ShipperDetail",
 
-  }
+      component: () =>
+        import(/* webpackChunkName: "about" */ "../views/ShipperForm.vue")
+    },
+
+    {
+      path: "/submit-trouble",
+      name: "SubmitTrouble",
+      component: () =>
+        import(/* webpackChunkName: "about" */ "../views/SubmitTrouble.vue")
+    }
   ]
-})
+});
