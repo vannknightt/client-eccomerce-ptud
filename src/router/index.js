@@ -17,7 +17,7 @@ export default new Router({
     },
     {
       path: "/home",
-      redirect: '/'
+      redirect: "/"
     },
     {
       path: "/product/list",
@@ -49,5 +49,12 @@ export default new Router({
       component: () =>
         import(/* webpackChunkName: "about" */ "../views/ShipperForm.vue")
     },
+
+    {
+      path: "/submit-trouble",
+      name: "SubmitTrouble",
+      component: () =>
+        import(/* webpackChunkName: "about" */ "../views/SubmitTrouble.vue")
+    }
   ]
 });

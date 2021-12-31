@@ -41,6 +41,7 @@ module.exports = {
     cacheBusting: true,
 
     cssSourceMap: true,
+
     devServer: {
       proxy: 'https://localhost',
   }

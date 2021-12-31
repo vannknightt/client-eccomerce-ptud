@@ -24,6 +24,7 @@ Vue.use(Vuex);
 Vue.use(Antd);
 
 
+
 /* eslint-disable no-new */
 new Vue({
   el: "#app",
