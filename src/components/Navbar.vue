@@ -4,6 +4,9 @@
     <b-navbar-nav>
       <b-nav-item :to="{ name: 'ProductList' }">Products</b-nav-item>
     </b-navbar-nav>
+    <b-navbar-nav>
+      <b-nav-item :to="{ name: 'RegisterShipper' }">Regíter Shipper</b-nav-item>
+    </b-navbar-nav>
 
     <b-navbar-brand
       :to="{ name: 'CartDisplay' }"

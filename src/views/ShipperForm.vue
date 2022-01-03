@@ -27,6 +27,7 @@
               type="default"
               @click="handleChangeImage('avatar')"
               icon="cloud-upload"
+              :loading="isUploadImage"
             >
               Upload avatar
             </a-button>
@@ -67,6 +68,7 @@
             type="default"
             @click="handleChangeImage('negative')"
             icon="cloud-upload"
+            :loading="isUploadImage"
           >
             Upload certification
           </a-button>
@@ -93,6 +95,7 @@
             type="default"
             @click="handleChangeImage('vaccine')"
             icon="cloud-upload"
+            :loading="isUploadImage"
           >
             Upload certification
           </a-button>
@@ -167,7 +170,8 @@ export default {
       ]
     },
     isEditPage: false,
-    shipperId: null
+    shipperId: null,
+    isUploadImage: false
   }),
   computed: {
     defaultAvatar() {
@@ -221,10 +225,13 @@ export default {
       if (event.target.files.length === 0) {
         return;
       }
+      this.isUploadImage = true;
       const formData = new FormData();
       formData.append("file", event.target.files[0]);
       const rs = await uploadService.uploadToServer(formData);
       if (!rs || !rs.success) {
+        this.isUploadImage = false;
+
         return;
       }
       switch (this.type) {
@@ -240,6 +247,7 @@ export default {
         default:
           break;
       }
+      this.isUploadImage = false;
     },
     submitForm() {
       this.$refs["shipperForm"].validate(async valid => {
@@ -264,6 +272,7 @@ export default {
             msg = "Register failed";
           }
           this.$message[type](msg, 3);
+          this.$router.push({ name: "ShipperDetail", params: { id: rs._id } });
         } catch (error) {
           this.setLoading(false);
         }
@@ -271,6 +280,7 @@ export default {
     },
     ...mapMutations("shipper", ["setLoading"]),
     async initData() {
+    
       this.setLoading(true);
       let type = "error";
       let msg = "Load data fail";
@@ -300,6 +310,8 @@ export default {
   },
   async mounted() {
     if (this.$route.name !== "ShipperDetail") {
+      this.form = {};
+      this.originForm = {};
       return;
     }
     this.isEditPage = true;
