@@ -129,7 +129,7 @@ import shipperService from "../api-services/shipperService.js";
 export default {
   name: "RegisterShipper",
   data: () => ({
-    form: {
+    defaultForm: {
       id: "",
       name: "",
       avatar: "",
@@ -139,6 +139,7 @@ export default {
       vaccine_cert: "",
       identify: ""
     },
+    form: {},
     originForm: {},
     formLayout: {
       labelCol: { span: 4 },
@@ -309,9 +310,8 @@ export default {
     }
   },
   async mounted() {
+    this.form = cloneDeep(this.defaultForm);
     if (this.$route.name !== "ShipperDetail") {
-      this.form = {};
-      this.originForm = {};
       return;
     }
     this.isEditPage = true;
