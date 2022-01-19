@@ -1,9 +1,12 @@
 <template>
-  <a-table :columns="columns" :data-source="orders">
+  <a-table :columns="columns" :data-source="orders" :scroll="{x: 100 + '%'}">
     <span slot="status" slot-scope="status">
       <a-tag :color="getStatusColor(status)">
         {{ getStatusLabel(status) }}
       </a-tag>
+    </span>
+    <span slot="action" slot-scope="text, record">
+      <a-button @click="handleViewDetail(record)" type="primary">View</a-button>
     </span>
   </a-table>
 </template>
@@ -12,7 +15,7 @@
 import orderService from "@/api-services/orderService";
 import { cloneDeep } from "loadsh";
 import { format } from "date-fns";
-import {mapMutations} from 'vuex'
+import { mapMutations } from "vuex";
 export default {
   name: "Order",
   data: () => ({
@@ -20,43 +23,58 @@ export default {
       {
         title: "ID",
         dataIndex: "_id",
-        key: "id"
+        key: "id",
+        width: "300px"
       },
       {
         title: "Shop",
         dataIndex: "shop_name",
-        key: "shop_name"
+        key: "shop_name",
+        width: "200px"
       },
       {
         title: "Customer",
         dataIndex: "cus_name",
-        key: "customer_name"
+        key: "customer_name",
+        width: "200px"
       },
       {
         title: "Shiping info",
         dataIndex: "ship_info",
-        key: "ship_info"
+        key: "ship_info",
+        width: "400px"
       },
       {
         title: "Product's total cost",
         dataIndex: "total",
-        key: "total"
+        key: "total",
+        width: "170px"
       },
       {
         title: "Shipper fee",
         dataIndex: "shipper_fee",
-        key: "shipper_fee"
+        key: "shipper_fee",
+        width: "150px"
       },
       {
         title: "Status",
         dataIndex: "status",
         key: "status",
-        scopedSlots: { customRender: "status" }
+        scopedSlots: { customRender: "status" },
+        width: "150px"
       },
       {
         title: "Created",
         dataIndex: "created_at",
-        key: "created_at"
+        key: "created_at",
+        width: "200px"
+      },
+      {
+        title: "Action",
+        dataIndex: "action",
+        key: "action",
+        scopedSlots: { customRender: "action" },
+        width: "100px"
       }
     ],
     orders: [],
@@ -107,6 +125,9 @@ export default {
         default:
           break;
       }
+    },
+    handleViewDetail(rec) {
+      this.$router.push({name: 'OrderDetail', params: {id: rec._id}})
     }
   },
   mounted() {
