@@ -57,10 +57,16 @@ export default new Router({
         import(/* webpackChunkName: "about" */ "../views/SubmitTrouble.vue")
     },
     {
-      path: "/order/:shipperId",
+      path: "/order/all/:shipperId",
       name: "OrderByShipper",
       component: () =>
         import(/* webpackChunkName: "about" */ "../views/Order.vue")
+    },
+    {
+      path: "/order/:id",
+      name: "OrderDetail",
+      component: () =>
+        import(/* webpackChunkName: "about" */ "../views/OrderDetail.vue")
     },
   ]
 });
