@@ -1,6 +1,12 @@
 <template>
   <div>
-    <navbar :pass_carts_length="cart_length"/>
+    <navbar :pass_carts_length="cart_length" />
+
+    <link
+      href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
     <br />
     <h1>Danh sách sản phẩm</h1>
     <br />
@@ -42,27 +48,30 @@
         <div
           class="col-lg-4 d-flex align-items-stretch"
           v-for="product in filterProduct"
-          :key="product.product_id"
+          v-bind:key="product.product_id"
         >
           <div class="card">
-            <h6 class="card-header">{{product.product_name}}</h6>
+            <h6 class="card-header">{{ product.product_name }}</h6>
             <div class="card-body" style="height: 150px">
               <img
-              :src="path + product.image_path"
-              class="img-circle"
-              alt="Services"
-            />
+                :src="product.image_path"
+                class="img-circle"
+                alt="Services"
+              />
             </div>
-            <br>
+            <br />
             <div class="card-footer">
               <span class="text-muted"
-                >{{product.product_price}} VND</span
+                >₫{{ product.product_price.toLocaleString() }}</span
               >
-              <a
+              <router-link
+                :to="{
+                  name: 'ProductDetail',
+                  params: { id: product.product_id },
+                }"
                 class="btn btn-secondary btn-sm float-right"
-                @click="addToCart(product.product_id)"
-                >Đặt hàng
-              </a>
+                >Xem mặt hàng
+              </router-link>
             </div>
           </div>
         </div>
@@ -114,20 +123,17 @@ input:placeholder-shown {
 <script>
 import ProductService from "@/api-services/ProductService";
 import CartService from "@/api-services/CartService";
-import Navbar from '../Navbar.vue';
-import App from '@/App.vue';
-
+import Navbar from "../Navbar.vue";
+import ProductDetail from "./ProductDetail.vue";
 
 export default {
-  components: { 
-    Navbar, 
-    App,
+  components: {
+    Navbar,
   },
   name: "ProductList",
   data() {
     return {
       products: [],
-      path: "https://localhost:44344",
       searchvalue: "",
       sortvalue: "",
       cart_length: 0,
@@ -140,7 +146,7 @@ export default {
 
     CartService.getCart().then((response) => {
       this.cart_length = response.data.length;
-      console.log(this.cart_length)
+      console.log(this.cart_length);
     });
   },
 
@@ -168,10 +174,10 @@ export default {
 
     addToCart(product_id) {
       CartService.addToCart(product_id).then((response) => {
-      this.cart_length = response.data.length;
-      console.log("product list (cart-length): " + this.cart_length);
-    });
-    }
+        this.cart_length = response.data.length;
+        console.log("product list (cart-length): " + this.cart_length);
+      });
+    },
   },
-};
+}; 
 </script>
