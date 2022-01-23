@@ -10,19 +10,24 @@ import OrderDetail from '@/components/Order/OrderDetail';
 
 import NotFound from '@/components/error-pages/NotFound';
 
-Vue.use(Router)
+
+Vue.use(Router);
 
 export default new Router({
-  mode:'history',
+  mode: "history",
   routes: [
     {
-      path: '/home',
-      name: 'Home',
+      path: "/",
+      name: "Home",
       component: Home
     },
     {
-      path: '/product/list',
-      name: 'ProductList',
+      path: "/home",
+      redirect: "/"
+    },
+    {
+      path: "/product/list",
+      name: "ProductList",
       component: ProductList
     },
     {
@@ -53,8 +58,42 @@ export default new Router({
     {
       path: '*',
       name: 'NotFound',
-      component: NotFound
-    }
 
+      component: NotFound
+    },
+
+    {
+      path: "/register-shipper",
+      name: "RegisterShipper",
+
+      component: () =>
+        import(/* webpackChunkName: "about" */ "../views/ShipperForm.vue")
+    },
+    {
+      path: "/shipper/:id",
+      name: "ShipperDetail",
+
+      component: () =>
+        import(/* webpackChunkName: "about" */ "../views/ShipperForm.vue")
+    },
+
+    {
+      path: "/submit-trouble",
+      name: "SubmitTrouble",
+      component: () =>
+        import(/* webpackChunkName: "about" */ "../views/SubmitTrouble.vue")
+    },
+    {
+      path: "/order/all/:shipperId",
+      name: "OrderByShipper",
+      component: () =>
+        import(/* webpackChunkName: "about" */ "../views/Order.vue")
+    },
+    {
+      path: "/order/:id",
+      name: "OrderDetail",
+      component: () =>
+        import(/* webpackChunkName: "about" */ "../views/OrderDetail.vue")
+    },
   ]
-})
+});
