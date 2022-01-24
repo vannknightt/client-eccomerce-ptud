@@ -42,6 +42,30 @@ export default new Router({
     name: 'SubmitTrouble',
     component: () => import(/* webpackChunkName: "about" */ '../views/SubmitTrouble.vue')
 
-  }
+  },
+  {
+    path: '/update-shipper',
+    name: 'UpdateShipper',
+    component: () => import(/* webpackChunkName: "about" */ '../views/UpdateShipper.vue')
+
+  },
+  {
+    path: '/submit-exteninfor',
+    name: 'SubmitExtenInfor',
+    component: () => import(/* webpackChunkName: "about" */ '../views/SubmitExtenInfor.vue')
+
+  },
+  {
+    path: '/rating-shipper',
+    name: 'RatingShipper',
+    component: () => import(/* webpackChunkName: "about" */ '../views/RatingShipper.vue')
+
+  },
+  {
+    path: '/rating-ofshipper',
+    name: 'RatingofShipper',
+    component: () => import(/* webpackChunkName: "about" */ '../views/RateofShiper.vue')
+
+  },
   ]
 })
