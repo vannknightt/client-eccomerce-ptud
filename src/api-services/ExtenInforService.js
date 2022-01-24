@@ -1,5 +1,5 @@
-import Axios from 'axios';
-const RESOURCE_NAME = 'https://trung-ptud-dotnet.herokuapp.com/api/Trouble';
+import * as Axios from 'axios';
+const RESOURCE_NAME = 'https://trung-ptud-dotnet.herokuapp.com/api/ExtenInfor';
 
 
 export default {
@@ -9,7 +9,7 @@ export default {
   },
 
   get(id) {
-    return Axios.get(`${RESOURCE_NAME}/${id}`);
+    return Axios.get(`${RESOURCE_NAME}/${id}`,{withCredentials: false});
   },
 
   create(data) {
@@ -17,7 +17,7 @@ export default {
   },
 
   update(id, data) {
-    return Axios.put(`${RESOURCE_NAME}/${id}`, data);
+    return Axios.put(`${RESOURCE_NAME}/${id}`, data,{withCredentials: false});
   },
 
   delete(id) {
