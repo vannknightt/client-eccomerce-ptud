@@ -1,24 +1,24 @@
-import Axios from 'axios';
-const RESOURCE_NAME = 'https://localhost:8080/api/shipper';
-export default {
 
+import axiosClient from "./axiosClient";
+
+const url = "https://ptud-dotnet-server.herokuapp.com/api/Shipper";
+const shipperService = {
+  create(payload) {
+    return axiosClient.post(url, payload);
+  },
+  update(id, payload) {
+    return axiosClient.put(`${url}/${id}`, payload);
+  },
   getAll() {
-    return Axios.get(RESOURCE_NAME);
+    return axiosClient.get(url);
   },
-
-  get(id) {
-    return Axios.get(`${RESOURCE_NAME}/${id}`);
+  getDetail(id) {
+    return axiosClient.get(`${url}/${id}`);
   },
-
-  create(data) {
-    return Axios.post(RESOURCE_NAME, data);
-  },
-
-  update(id, data) {
-    return Axios.put(`${RESOURCE_NAME}/${id}`, data,{withCredentials: false});
-  },
-
   delete(id) {
-    return Axios.delete(`${RESOURCE_NAME}/${id}`);
+    return axiosClient.delete(`${url}/${id}`);
   }
 };
+
+export default shipperService;
+

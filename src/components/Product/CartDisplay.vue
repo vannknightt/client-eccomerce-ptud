@@ -1,7 +1,42 @@
 <template>
-  <div>
-    <navbar :pass_carts_length="get_cart_length"/>
+  <div v-if="get_cart_length <= 0">
+    <link
+      href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
 
+    <navbar :pass_carts_length="get_cart_length" />
+    <br /><br />
+    <div class="container-fluid mt-100">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="col-sm-12 empty-cart-cls text-center">
+            <img
+              src="https://cdn3.iconfinder.com/data/icons/shopping-and-ecommerce-29/90/empty_cart-512.png"
+              width="130"
+              height="130"
+              class="img-fluid mb-4 mr-3"
+            />
+            <h3><strong>Giỏ hàng của bạn còn trống</strong></h3>
+            <router-link
+              :to="{ name: 'ProductList' }"
+              class="btn btn-primary cart-btn-transform m-3"
+              >Tiếp tục mua sắm
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div v-else>
+    <navbar :pass_carts_length="get_cart_length" />
+    <link
+      href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
     <br />
     <h3 align="left">GIỎ HÀNG</h3>
 
@@ -12,6 +47,7 @@
             <thead>
               <tr>
                 <th></th>
+                <th></th>
                 <th>Sản phẩm</th>
                 <th>Giá</th>
                 <th>Số lượng</th>
@@ -19,30 +55,45 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="cartitem in carts" 
-              :key="cartitem.product.product_id">
+              <tr v-for="cartitem in carts" :key="cartitem.product.product_id">
                 <td>
-                  <img :src="path + cartitem.product.image_path" />
+                  <input
+                    type="checkbox"
+                    v-model="is_checked"
+                    :value="cartitem.product.product_id"
+                    @change="showCheckBoxVal()"
+                  />
+                </td>
+                <td>
+                  <img :src="cartitem.product.image_path" />
                 </td>
                 <td>{{ cartitem.product.product_name }}</td>
-                <td>₫{{ cartitem.product.product_price }}</td>
+                <td>₫{{ cartitem.product.product_price.toLocaleString() }}</td>
                 <td>
                   <input
                     type="number"
-                    name="points"
+                    min="1"
                     step="1"
-                    @change="calcItem(itemquantity)"
+                    @change="
+                      updateCartQuantity(
+                        cartitem.product.product_id,
+                        $event.target.value
+                      )
+                    "
                     :value="cartitem.quantity"
                   />
                 </td>
                 <td style="color: red">
-                  ₫{{ cartitem.quantity * cartitem.product.product_price }}
+                  ₫{{
+                    calcPrice(cartitem.quantity, cartitem.product.product_price)
+                  }}
                 </td>
                 <td>
-                  <b-button variant="success">Cập nhật</b-button>
-                </td>
-                <td>
-                  <b-button variant="danger">Xóa</b-button>
+                  <b-button
+                    variant="danger"
+                    @click="removeItem(cartitem.product.product_id)"
+                    >Xóa</b-button
+                  >
                 </td>
               </tr>
             </tbody>
@@ -50,15 +101,21 @@
         </div>
       </b-col>
     </b-row>
+    <div style="float: right">
+      <th>Tổng Tiền : ₫{{ get_total }}</th>
+    </div>
+    <br />
+    <!-- <button class="btn btn-success" @click="sendOrder()">Gửi đơn hàng</button> -->
 
-    <a asp-controller="Product" asp-action="Checkout" class="btn btn-success"
-      >Gửi đơn hàng</a
+    <router-link
+      :to="{ name: 'Checkout', query: { checked_cart: this.is_checked } }"
     >
+      <button class="btn btn-success">Mua hàng</button>
+    </router-link>
   </div>
 </template>
 
 <style scoped>
-
 img {
   width: 75px;
   height: 75px;
@@ -67,37 +124,110 @@ img {
 
 <script>
 import CartService from "@/api-services/CartService";
-import Navbar from '@/components/Navbar';
+import Navbar from "@/components/Navbar";
 
 export default {
   name: "CartDisplay",
   components: {
-    Navbar
+    Navbar,
   },
   data() {
     return {
       carts: [],
       cart_length: 0,
-      path: "https://localhost:44344",
+      is_checked: [],
+      checked_cart: [],
+      total: 0,
     };
   },
 
   created() {
     CartService.getCart().then((response) => {
       this.carts = response.data;
-      console.log(this.carts.length)
       this.cart_length = this.carts.length;
+      // console.log('cart display ' + this.carts.length)
+      //console.log('cart display ' + JSON.stringify(this.carts));
+
     });
   },
 
   computed: {
     get_cart_length() {
       return this.cart_length;
-    }
+    },
+    get_total() {
+      return Math.round(this.total).toLocaleString();
+    },
   },
   methods: {
-    calcItem(itemquantity) {
-      console.log(itemquantity);
+    calcPrice(itemquantity, unitprice) {
+      // console.log("item quantity " + itemquantity);
+
+      return Math.round(itemquantity * unitprice).toLocaleString();
+    },
+    updateCartQuantity(item_id, itemquantity) {
+      // console.log("update cart item quantity " + itemquantity);
+      // console.log("update cart item id " + item_id);
+
+      CartService.updateCartItem(item_id, itemquantity).then((response) => {
+        this.carts = response.data;
+        this.showCheckBoxVal();
+      });
+    },
+    removeItem(item_id) {
+      // console.log(item_id);
+
+      CartService.removeCartItem(item_id).then((response) => {
+        this.carts = response.data;
+        // console.log(this.carts.length)
+        this.cart_length = this.carts.length;
+      });
+    },
+    showCheckBoxVal() {
+      // console.log("checked : " + this.is_checked.length);
+      console.log("checked : " + this.is_checked);
+      let sum = 0;
+      for (let i = 0; i < this.carts.length; i++) {
+        if (this.is_checked.includes(this.carts[i].product.product_id)) {
+          sum +=
+            parseFloat(this.carts[i].product.product_price) *
+            parseFloat(this.carts[i].quantity);
+        }
+      }
+      this.total = sum;
+    },
+    sendOrder() {
+      for (let i = 0; i < this.carts.length; i++) {
+        if (this.is_checked.includes(this.carts[i].product.product_id)) {
+          this.checked_cart.push(this.carts[i]);
+        }
+      }
+      return this.checked_cart;
+      // this.checked_cart.sort(function (a, b) {
+      //   return a.product.shop_id.localeCompare(b.product.shop_id);
+      // });
+
+      // console.log("checked cart : " + JSON.stringify(this.checked_cart.length));
+      // // console.log("checked cart : " + JSON.stringify(this.checked_cart));
+
+      // for (let i = 0; i < this.checked_cart.length; i++) {
+      //   console.log(JSON.stringify(this.checked_cart[i]));
+      // }
+
+      // const uniqueShopID = [
+      //   ...new Set(this.checked_cart.map((item) => item.product.shop_id)),
+      // ];
+
+      // console.log(JSON.stringify(uniqueShopID));
+
+      // let curOrder = [];
+      // for (let i = 0; i < uniqueShopID.length; i++) {
+      //   curOrder = this.checked_cart.filter(
+      //     (order) => order.product.shop_id === uniqueShopID[i]
+      //   );
+
+      //   console.log("order number     " + i + JSON.stringify(curOrder));
+      // }
     },
   },
 };

@@ -4,28 +4,32 @@
     <b-navbar-nav>
       <b-nav-item :to="{ name: 'ProductList' }">Products</b-nav-item>
     </b-navbar-nav>
+    <b-navbar-nav>
+      <b-nav-item :to="{ name: 'RegisterShipper' }">Regíter Shipper</b-nav-item>
+    </b-navbar-nav>
+
+    <b-navbar-nav>
+      <b-nav-item :to="{ name: 'OrderList' }">Đơn hàng</b-nav-item>
+    </b-navbar-nav>
 
     <b-navbar-brand
       :to="{ name: 'CartDisplay' }"
       class="ms-auto"
       style="margin-right: 100px"
       >Giỏ hàng
-      <span>({{navbar_carts_length}})</span>
-
+      <span>({{ navbar_carts_length }})</span>
     </b-navbar-brand>
   </b-navbar>
 </template>
 <script>
-
 export default {
   name: "Navbar",
-  props: ['pass_carts_length'],
-  navbar_carts_length: 0,
+  props: ["pass_carts_length"],
 
   computed: {
-    navbar_carts_length: function() {
+    navbar_carts_length: function () {
       return this.pass_carts_length;
-    }
-  }
+    },
+  },
 };
 </script>

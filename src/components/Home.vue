@@ -1,5 +1,6 @@
 <template>
   <div>
+    <navbar/>
     <p class="homeText">WELCOME TO ACCOUNT-OWNER APPLICATION</p>
   </div>
 </template>
