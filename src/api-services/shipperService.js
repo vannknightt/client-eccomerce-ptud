@@ -1,4 +1,3 @@
-
 import axiosClient from "./axiosClient";
 import { cloneDeep } from "loadsh";
 const url = "https://ptud-dotnet-server.herokuapp.com/api/Shipper";
@@ -35,9 +34,7 @@ const shipperService = {
       `${javaUrl}/${shipperId}/salary/month/${date.getMonth() +
         1}/year/${date.getFullYear()}`
     );
-    // return axiosClient.get(`https://ptud-java-server.herokuapp.com/api/shipper/61b0c7167eedacf69e17eb72/salary/month/1/year/2022`)
   }
 };
 
 export default shipperService;
-

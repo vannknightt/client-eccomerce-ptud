@@ -1,7 +1,6 @@
 import axiosClient from "./axiosClient";
 
-const url = "https://localhost:5001/api/Order";
-// const url = "https://ptud-dotnet-server.herokuapp.com/api/Order";
+const url = "https://ptud-dotnet-server.herokuapp.com/api/Order";
 const javaUrl = "https://ptud-java-server.herokuapp.com/api/order";
 const shipperId = localStorage.getItem("shipperId").replace("str", "");
 const shipperService = {
