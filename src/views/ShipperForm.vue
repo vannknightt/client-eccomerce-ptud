@@ -34,6 +34,12 @@
             <a-input v-model="form.avatar" v-show="false" />
           </div>
         </a-form-model-item>
+        <a-form-model-item v-if="!isEditPage" label="Username" prop="username">
+          <a-input v-model="form.username" />
+        </a-form-model-item>
+        <a-form-model-item v-if="!isEditPage" label="Password" prop="password">
+          <a-input-password allow-clear v-model="form.password" />
+        </a-form-model-item>
         <a-form-model-item label="Name" prop="name">
           <a-input v-model="form.name" />
         </a-form-model-item>
@@ -137,7 +143,9 @@ export default {
       address: "",
       negative_cert: "",
       vaccine_cert: "",
-      identify: ""
+      identify: "",
+      username: "",
+      password: ""
     },
     form: {},
     originForm: {},
@@ -148,6 +156,12 @@ export default {
     },
     type: "",
     rules: {
+      username: [
+        { required: true, message: "This field is required", trigger: "blur" }
+      ],
+      password: [
+        { required: true, message: "This field is required", trigger: "blur" }
+      ],
       name: [
         { required: true, message: "This field is required", trigger: "blur" }
       ],
@@ -170,7 +184,6 @@ export default {
         { required: true, message: "This field is required", trigger: "blur" }
       ]
     },
-    isEditPage: false,
     shipperId: null,
     isUploadImage: false
   }),
@@ -195,6 +208,9 @@ export default {
         return "";
       }
       return this.form.vaccine_cert;
+    },
+    isEditPage() {
+      return this.$route.name === "ShipperDetail";
     }
   },
   methods: {
@@ -273,7 +289,7 @@ export default {
             msg = "Register failed";
           }
           this.$message[type](msg, 3);
-          this.$router.push({ name: "ShipperDetail", params: { id: rs._id } });
+          this.$router.push({ name: "LoginShipper" });
         } catch (error) {
           this.setLoading(false);
         }
@@ -281,19 +297,12 @@ export default {
     },
     ...mapMutations("shipper", ["setLoading"]),
     async initData() {
-    
       this.setLoading(true);
       let type = "error";
       let msg = "Load data fail";
       this.shipperId = this.$route.params.id;
-      if (!this.shipperId) {
-        this.$message[type](msg, 3);
-        this.setLoading(false);
-
-        return;
-      }
-
-      const rs = await shipperService.getDetail(this.shipperId);
+      
+      const rs = await shipperService.getDetail();
       if (!rs) {
         this.$message[type](msg, 3);
         this.setLoading(false);
@@ -311,11 +320,13 @@ export default {
   },
   async mounted() {
     this.form = cloneDeep(this.defaultForm);
-    if (this.$route.name !== "ShipperDetail") {
-      return;
+    // if (this.$route.name !== "ShipperDetail") {
+    //   return;
+    // }
+    // this.isEditPage = true;
+    if (this.isEditPage) {
+      await this.initData();
     }
-    this.isEditPage = true;
-    await this.initData();
   }
 };
 </script>
