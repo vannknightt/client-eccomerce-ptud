@@ -6,10 +6,13 @@
       </a-button>
     </a-row>
     <a-row class="row-content">
+      <vue-qr :text="urlQr" :size="150"></vue-qr>
+    </a-row>
+    <a-row class="row-content">
       <a-col :span="12">
         <a-row>
           <a-col :span="24" class="label align-items-center">
-            <span>
+            <span :style="{ marginRight: 16 + 'px' }">
               Order Id
             </span>
             <a-tag :color="getStatusColor(order.status)">
@@ -98,9 +101,7 @@
       <a-col :span="12">
         <a-row>
           <a-col :span="24" class="label">Order date</a-col>
-          <a-col :span="24" class="content">{{
-            formatTime(order.created_at)
-          }}</a-col>
+          <a-col :span="24" class="content">{{ order.created_at }}</a-col>
         </a-row>
       </a-col>
       <a-col :span="12">
@@ -130,6 +131,35 @@
         >
       </a-col>
     </a-row>
+
+    <a-modal
+      v-model="visibleReceive"
+      title=" Are you sure to confirm receiving goods?"
+      @ok="handleConfirm"
+      @cancel="handleCancel"
+      :okText="okText"
+      :cancelText="cancelText"
+      :ok-button-props="{ props: { loading: isLoading } }"
+      :cancel-button-props="{ props: { loading: isLoading } }"
+      :maskClosable="false"
+      :closable="false"
+    >
+      <a-form-model
+        :model="form"
+        ref="otpForm"
+        :rules="rules"
+        v-if="!getOTPSuccess"
+      >
+        <a-form-model-item label="Phone to get OTP" prop="phone">
+          <a-input v-model="form.phone" />
+        </a-form-model-item>
+      </a-form-model>
+      <a-form-model :model="formOTP" ref="confirmForm" :rules="otpRules" v-else>
+        <a-form-model-item label="Enter OTP" prop="otp">
+          <a-input v-model="formOTP.otp" />
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
   </div>
 </template>
 
@@ -139,8 +169,11 @@ import shopService from "@/api-services/shopService";
 import { cloneDeep } from "loadsh";
 import { format } from "date-fns";
 import { mapMutations } from "vuex";
+import VueQr from "vue-qr";
+
 export default {
   name: "Order",
+  components: { VueQr },
   data: () => ({
     order: {},
     shop: {},
@@ -170,7 +203,7 @@ export default {
         dataIndex: "Multiply",
         key: "Multiply",
         width: "100px",
-        scopedSlots: { customRender: "Multiply" },
+        scopedSlots: { customRender: "Multiply" }
       },
       {
         title: "Quantity",
@@ -179,21 +212,61 @@ export default {
         width: "100px",
         align: "center"
       },
-       {
+      {
         title: "",
         dataIndex: "Equal",
         key: "Equal",
         width: "50px",
-        scopedSlots: { customRender: "Equal" },
+        scopedSlots: { customRender: "Equal" }
       },
       {
         title: "Total",
         dataIndex: "total",
         key: "total",
         width: "200px"
-      },
-    ]
+      }
+    ],
+    visibleReceive: false,
+    url: `https://ptud.vercel.app/order/id?action=confirm`,
+    form: {
+      phone: ""
+    },
+    rules: {
+      phone: [
+        { required: true, message: "This field is required", trigger: "blur" }
+      ]
+    },
+    formOTP: {
+      otp: ""
+    },
+    otpRules: {
+      otp: [
+        { required: true, message: "This field is required", trigger: "blur" }
+      ]
+    },
+    getOTPSuccess: false,
+    cusIDConfirm: "",
+    isLoading: false
   }),
+  computed: {
+    urlQr() {
+      return this.url.replace("id", this.$route.params.id);
+    },
+    okText() {
+      if (!this.getOTPSuccess) {
+        return "Get OTP";
+      }
+
+      return "Received successfully";
+    },
+    cancelText() {
+      if (!this.getOTPSuccess) {
+        return "Cancel";
+      }
+
+      return "Not Received goods";
+    }
+  },
   methods: {
     ...mapMutations("shipper", ["setLoading"]),
 
@@ -211,18 +284,21 @@ export default {
 
       this.order = cloneDeep(rs);
       this.order.order_detail.forEach(c => {
-        c.total = `${(c.price*c.quantity).toFixed(2)} VND`
-      })
+        c.total = `${(c.price * c.quantity).toFixed(2)} VND`;
+      });
       this.setLoading(false);
     },
     getStatusColor(status) {
       switch (status) {
         case -2:
         case -3:
+        case -4:
           return "red";
         case 2:
-          return "blue";
+          return "yellow";
         case 3:
+          return "blue";
+        case 4:
           return "green";
         default:
           break;
@@ -231,13 +307,15 @@ export default {
     getStatusLabel(status) {
       switch (status) {
         case -3:
-          return "Customer cancel"
+          return "Customer cancel";
         case -2:
           return "Shipper cancel";
         case 2:
           return "Shipping";
         case 3:
           return "Ship success";
+        case 4:
+          return "Customer confirm";
         default:
           break;
       }
@@ -270,17 +348,106 @@ export default {
         return;
       }
       this.setLoading(true);
-      const rs = await orderService.updateStatus(id, status);
+      const rs = await orderService.javaUpdateStatus(id, status);
       if (!rs) {
         this.setLoading(false);
         return;
       }
       this.initData();
       this.setLoading(false);
+    },
+    async handleConfirm() {
+      if (!this.getOTPSuccess) {
+        this.$refs["otpForm"].validate(async valid => {
+          if (!valid) {
+            return;
+          }
+          this.isLoading = true;
+          const rs = await orderService.getOTP(this.form.phone);
+          if (!rs) {
+            this.isLoading = false;
+            return;
+          }
+          this.getOTPSuccess = !!rs;
+          this.cusIDConfirm = rs;
+          this.isLoading = false;
+        });
+
+        return;
+      }
+
+      this.$refs["confirmForm"].validate(async valid => {
+        if (!valid) {
+          return;
+        }
+        this.isLoading = true;
+        const rs = await orderService.verifyOTP(
+          this.cusIDConfirm,
+          this.formOTP.otp
+        );
+        if (!rs) {
+          this.isLoading = false;
+          return;
+        }
+
+        try {
+          const receiveRs = await orderService.javaUpdateStatus(
+            this.order._id,
+            4
+          );
+          this.$message["success"]("Confirm receive success", 3);
+
+          this.isLoading = false;
+          this.visibleReceive = false;
+        } catch (err) {
+          this.$message["error"]("Confirm receive failed", 3);
+          this.isLoading = false;
+        }
+      });
+    },
+    handleCancel() {
+      if (!this.getOTPSuccess) {
+        this.visibleReceive = false;
+        return;
+      }
+
+      this.$refs["confirmForm"].validate(async valid => {
+        if (!valid) {
+          return;
+        }
+        this.isLoading = true;
+        const rs = await orderService.verifyOTP(
+          this.cusIDConfirm,
+          this.formOTP.otp
+        );
+        if (!rs) {
+          this.isLoading = false;
+
+          return;
+        }
+
+        try {
+          const receiveRs = await orderService.javaUpdateStatus(
+            this.order._id,
+            -4
+          );
+          this.visibleReceive = false;
+          this.$message["success"]("Confirm receive success", 3);
+
+          this.isLoading = false;
+        } catch (err) {
+          this.isLoading = false;
+          this.$message["error"]("Confirm receive failed", 3);
+        }
+      });
     }
   },
   mounted() {
     this.initData();
+    const confirmReceive = this.$route.query.action === "confirm";
+    if (confirmReceive) {
+      this.visibleReceive = true;
+    }
   }
 };
 </script>
@@ -294,6 +461,9 @@ th {
   font-size: 16px;
 
   margin-bottom: 8px;
+
+  display: flex;
+  justify-content: center;
 }
 
 .content {
@@ -301,7 +471,9 @@ th {
   font-weight: 400;
   font-size: 14px;
 
-  margin-left: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .row-content {

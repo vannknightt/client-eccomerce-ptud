@@ -35,6 +35,8 @@ export default {
       duration: 2,
       maxCount: 3
     });
+
+    localStorage.removeItem('accountType')
   }
 };
 </script>

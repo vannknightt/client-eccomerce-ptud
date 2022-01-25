@@ -68,7 +68,7 @@ export default new Router({
         import(/* webpackChunkName: "about" */ "../views/ShipperForm.vue")
     },
     {
-      path: "/shipper/:id",
+      path: "/shipper/me",
       name: "ShipperDetail",
 
       component: () =>
@@ -105,7 +105,7 @@ export default new Router({
         import(/* webpackChunkName: "about" */ "../views/SubmitTrouble.vue")
     },
     {
-      path: "/order/all/:shipperId",
+      path: "/order/all",
       name: "OrderByShipper",
       component: () =>
         import(/* webpackChunkName: "about" */ "../views/Order.vue")
@@ -115,6 +115,18 @@ export default new Router({
       name: "OrderDetail",
       component: () =>
         import(/* webpackChunkName: "about" */ "../views/OrderDetail.vue")
+    },
+    {
+      path: "/login-shipper",
+      name: "LoginShipper",
+      component: () =>
+        import(/* webpackChunkName: "about" */ "../views/ShipperLogin.vue")
+    },
+    {
+      path: "/income-shipper",
+      name: "IncomeShipper",
+      component: () =>
+        import(/* webpackChunkName: "about" */ "../views/IncomeShipper.vue")
     },
   ]
 });
