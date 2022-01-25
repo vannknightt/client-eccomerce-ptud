@@ -23,6 +23,10 @@
       >
     </b-navbar-nav>
 
+    <b-navbar-nav>
+      <b-nav-item :to="{ name: 'OrderList' }">Đơn hàng</b-nav-item>
+    </b-navbar-nav>
+
     <b-navbar-brand
       v-if="!isShipper"
       :to="{ name: 'CartDisplay' }"
@@ -48,7 +52,7 @@ export default {
   navbar_carts_length: 0,
 
   computed: {
-    navbar_carts_length: function() {
+    navbar_carts_length: function () {
       return this.pass_carts_length;
     },
     isShipper() {

@@ -6,20 +6,20 @@ Axios.defaults.withCredentials = true;
 
 const RESOURCE_NAME = '/api/cart';
 
+const pathasp = 'https://localhost:44344'
+//const pathasp = 'https://aspnet-ecommerce-ptud.herokuapp.com'
+
 export default {
   getCart() {
-    return Axios.get(RESOURCE_NAME);
+    return Axios.get(pathasp + RESOURCE_NAME);
   },
-
   addToCart(product_id) {
-    return Axios.post(RESOURCE_NAME + '/addcart/' + product_id, {withCredentials: true});
+    return Axios.post(pathasp + RESOURCE_NAME + '/addcart/' + product_id);
   },
-
-  update(id, data) {
-    return Axios.put(`${RESOURCE_NAME}/${id}`, data);
+  updateCartItem(product_id, quantity) {
+    return Axios.put(pathasp + RESOURCE_NAME + '/updatecartquantity/' + product_id + '/' + quantity)
   },
-
-  delete(id) {
-    return Axios.delete(`${RESOURCE_NAME}/${id}`);
-  }
+  removeCartItem(product_id) {
+    return Axios.delete(pathasp + RESOURCE_NAME + '/removecart/' + product_id);
+  },
 };
