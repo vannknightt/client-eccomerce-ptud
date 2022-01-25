@@ -145,8 +145,8 @@ img {
 
 <script>
 import CartService from "@/api-services/CartService";
-import ShipperService from "@/api-services/ShipperService";
-import OrderService from "@/api-services/OrderService";
+import ShipperService from "@/api-services/cusShipperService";
+import OrderService from "@/api-services/cusOrderService";
 
 import Axios from "axios";
 

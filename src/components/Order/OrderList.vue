@@ -85,7 +85,7 @@ img {
 
 
 <script>
-import OrderService from "@/api-services/OrderService";
+import OrderService from "@/api-services/cusOrderService";
 import CartService from "@/api-services/CartService";
 import Navbar from "@/components/Navbar";
 
