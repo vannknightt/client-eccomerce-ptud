@@ -37,6 +37,14 @@
       <b-nav-item :to="{ name: 'CusOrderList' }">Đơn hàng</b-nav-item>
     </b-navbar-nav>
 
+    <b-navbar-nav>
+      <b-nav-item :to="{ name: 'RatingShipper' }">Đánh giá shipper</b-nav-item>
+    </b-navbar-nav>
+
+    <b-navbar-nav>
+      <b-nav-item :to="{ name: 'RatingofShipper' }">Xem đánh giá của shipper</b-nav-item>
+    </b-navbar-nav>
+
     <b-navbar-brand
       v-if="!isShipper"
       :to="{ name: 'CartDisplay' }"
