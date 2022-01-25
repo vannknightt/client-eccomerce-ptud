@@ -34,7 +34,7 @@
                   <th>Thành tiền</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody v-if="order.order_detail && order.order_detail.length > 0 ">
                 <td>
                   <img :src="order.order_detail[0].imagePath" />
                 </td>
@@ -56,7 +56,7 @@
             <div class="container">
               <div class="text-right">
 
-                <router-link :to="{name: 'OrderDetail', params: {id: order.id}}">
+                <router-link :to="{name: 'CusOrderDetail', params: {id: order.id}}">
                 <b-button variant="primary">Xem chi tiết</b-button>
                 </router-link>
               </div>
@@ -90,7 +90,7 @@ import CartService from "@/api-services/CartService";
 import Navbar from "@/components/Navbar";
 
 export default {
-  name: "OrderList",
+  name: "CusOrderList",
   components: {
     Navbar,
   },
@@ -105,7 +105,7 @@ export default {
   created() {
     OrderService.getOrder().then((response) => {
       this.orderList = response.data;
-      console.log(JSON.stringify(this.orderList));
+      console.log('created order ' + (this.orderList));
     });
 
     CartService.getCart().then((response) => {

@@ -100,7 +100,7 @@
               <td>{{ shipper.name }}</td>
               <td>{{ shipper.phone }}</td>
               <td>{{ shipper.distance.toFixed(3) }} km</td>
-              <td>34,000đ</td>
+              <td>{{ Math.round(5000 * shipper.distance).toLocaleString()}}₫</td>
             </tr>
           </tbody>
         </table>

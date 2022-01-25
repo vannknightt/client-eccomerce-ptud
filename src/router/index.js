@@ -5,8 +5,8 @@ import ProductList from '@/components/Product/ProductList';
 import CartDisplay from '@/components/Product/CartDisplay';
 import ProductDetail from '@/components/Product/ProductDetail';
 import Checkout from '@/components/Product/Checkout';
-import OrderList from '@/components/Order/OrderList';
-import OrderDetail from '@/components/Order/OrderDetail';
+import CusOrderList from '@/components/Order/OrderList';
+import CusOrderDetail from '@/components/Order/OrderDetail';
 
 import NotFound from '@/components/error-pages/NotFound';
 
@@ -44,14 +44,14 @@ export default new Router({
       component: Checkout
     },
     {
-      path: '/order',
-      name: 'OrderList',
-      component: OrderList
+      path: '/cusorder',
+      name: 'CusOrderList',
+      component: CusOrderList
     },
     {
-      path: '/order/detail/:id',
-      name: 'OrderDetail',
-      component: OrderDetail
+      path: '/cusorder/detail/:id',
+      name: 'CusOrderDetail',
+      component: CusOrderDetail
     },
     {
       path: '*',

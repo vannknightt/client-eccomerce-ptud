@@ -289,7 +289,7 @@ import CartService from "@/api-services/CartService";
 import Navbar from "@/components/Navbar";
 
 export default {
-  name: "OrderDetail",
+  name: "CusOrderDetail",
   components: {
     Navbar,
   },

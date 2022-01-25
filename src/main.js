@@ -16,8 +16,6 @@ import "ant-design-vue/dist/antd.css";
 
 import { store } from "./store/store";
 
-import Axios from "axios";
-
 Vue.config.productionTip = false;
 Axios.defaults.baseURL = process.env.API_ENDPOINT;
 
