@@ -22,6 +22,16 @@
         >Income</b-nav-item
       >
     </b-navbar-nav>
+    <b-navbar-nav>
+      <b-nav-item :to="{ name: 'SubmitExtenInfor' }" v-if="isShipper"
+        >Update extend info</b-nav-item
+      >
+    </b-navbar-nav>
+    <b-navbar-nav>
+      <b-nav-item :to="{ name: 'SubmitTrouble' }" v-if="isShipper"
+        >Submit trouble</b-nav-item
+      >
+    </b-navbar-nav>
 
     <b-navbar-nav>
       <b-nav-item :to="{ name: 'OrderList' }">Đơn hàng</b-nav-item>
