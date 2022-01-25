@@ -1,11 +1,11 @@
 import Axios from 'axios';
 
 const RESOURCE_NAME = '/api/order';
-const pathasp = 'https://localhost:44344'
-const pathjava = 'http://localhost:8080'
+// const pathasp = 'https://localhost:44344'
+// const pathjava = 'http://localhost:8080'
 
-// const pathasp = 'https://aspnet-ecommerce-ptud.herokuapp.com'
-// const pathjava = 'https://java-ecommerce-ptud.herokuapp.com'
+const pathasp = 'https://aspnet-ecommerce-ptud.herokuapp.com'
+const pathjava = 'https://java-ecommerce-ptud.herokuapp.com'
 
 export default {
   getOrder() {

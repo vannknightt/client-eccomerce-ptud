@@ -23,22 +23,20 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="cartitem in carts" :key="cartitem.product.product_id">
+              <tr v-for="cartitem in carts" :key="cartitem.product.id">
                 <td>
                   <p>Cửa hàng {{ cartitem.product.shop_id }}</p>
                 </td>
                 <td>
-                  <img :src="cartitem.product.image_path" />
+                  <img :src="cartitem.product.imagePath" />
                 </td>
-                <td>{{ cartitem.product.product_name }}</td>
-                <td>₫{{ cartitem.product.product_price.toLocaleString() }}</td>
+                <td>{{ cartitem.product.name }}</td>
+                <td>₫{{ cartitem.product.price.toLocaleString() }}</td>
                 <td>
                   <input type="text" :value="cartitem.quantity" readonly />
                 </td>
                 <td style="color: red">
-                  ₫{{
-                    calcPrice(cartitem.quantity, cartitem.product.product_price)
-                  }}
+                  ₫{{ calcPrice(cartitem.quantity, cartitem.product.price) }}
                 </td>
               </tr>
             </tbody>
@@ -48,29 +46,66 @@
     </b-row>
 
     <br />
-    <h3 align="left">Chọn đơn vị vận chuyển</h3>
+    <br />
+    <h3 align="left">Địa chỉ giao hàng</h3>
+    <br />
 
-    <div id="map"></div>
+    <input
+      type="text"
+      size="100"
+      placeholder="Enter your address"
+      v-model="address"
+    />
 
     <button class="btn btn-success" @click="locatorButtonPressed()">
       Lấy vị trí hiện tại
     </button>
+    <br />
+    <br />
+    <h3 align="left">Chọn đơn vị vận chuyển</h3>
+    <br />
+    <button class="btn btn-success" @click="findShipper()">
+      Tìm kiếm shipper
+    </button>
 
     <br />
-    <select
-      class="form-select"
-      aria-label="Default select example"
-      @click="get_shipping_cost()"
-    >
-      <option selected>Open this select menu</option>
-      <option
-        v-for="shipper in shipper_list"
-        v-bind:key="shipper.id"
-        v-bind:value="shipper.name"
-      >
-        {{ shipper.name }}
-      </option>
-    </select>
+    <br />
+    <div v-if="is_find_shipper == 1">
+      <h4 align="left">Danh sách shipper gần nhất</h4>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>></th>
+              <th>Ảnh đại diện</th>
+              <th>Tên</th>
+              <th>Số điện thoại</th>
+              <th>Khoảng cách đến địa điểm của bạn</th>
+              <th>Giá vận chuyển</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="shipper in shipper_list" v-bind:key="shipper.id">
+              <td>
+                <input
+                  type="checkbox"
+                  v-model="shipper_id"
+                  :value="shipper.id"
+                  @change="showCheckBoxVal()"
+                />
+              </td>
+              <td>
+                <img :src="shipper.avatar" />
+              </td>
+              <td>{{ shipper.name }}</td>
+              <td>{{ shipper.phone }}</td>
+              <td>{{ shipper.distance.toFixed(3) }} km</td>
+              <td>34,000đ</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
     <br />
     <div style="float: right">
       <th>
@@ -103,29 +138,10 @@ img {
 </style>
 
 <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHzPUAWlDVC61Hqo1cc8g7ErkYnXGX-qE
+    src="https://maps.googleapis.com/maps/api/js?key=
+    AIzaSyC3C6sepP8uOS9lFDwK67Hn66AMB-Dh2AY
     &callback=initMap">
 </script>
-
-<script>
-// Initialize and add the map
-var map;
-function initMap() {
-  // The map, centered on Central Park
-  const center = { lat: 40.774102, lng: -73.971734 };
-  const options = { zoom: 15, scaleControl: true, center: center };
-  map = new google.maps.Map(document.getElementById("map"), options);
-  // Locations of landmarks
-  const dakota = { lat: 40.7767644, lng: -73.9761399 };
-  const frick = { lat: 40.771209, lng: -73.9673991 };
-  // The markers for The Dakota and The Frick Collection
-  var mk1 = new google.maps.Marker({ position: dakota, map: map });
-  var mk2 = new google.maps.Marker({ position: frick, map: map });
-}
-</script>
-    <!--Load the API from the specified URL -- remember to replace YOUR_API_KEY-->
-
-
 
 <script>
 import CartService from "@/api-services/CartService";
@@ -144,8 +160,13 @@ export default {
       total: 0,
       shipper_list: [],
       shipping_cost: 0,
-      shipper_id: "",
+      shipper_id: [],
       address: "",
+      customer_id: "61b0cd3b536c31dd0b77896b",
+      lati: 0,
+      long: 0,
+      is_find_shipper: -1,
+      shipper_found: [],
     };
   },
   mounted() {
@@ -158,7 +179,7 @@ export default {
       // console.log(JSON.stringify(temp_carts));
 
       for (let i = 0; i < temp_carts.length; i++) {
-        if (this.checked_cart.includes(temp_carts[i].product.product_id)) {
+        if (this.checked_cart.includes(temp_carts[i].product.id)) {
           this.carts.push(temp_carts[i]);
         }
       }
@@ -174,13 +195,20 @@ export default {
       // console.log(JSON.stringify(this.shipper_list));
       //   console.log("checkout cart" + JSON.stringify(this.carts));
     });
+
+    navigator.geolocation.getCurrentPosition((position) => {
+      this.lati = position.coords.latitude;
+      this.long = position.coords.longitude;
+      console.log("mounted Lat : " + this.lati);
+      console.log("mounted Long : " + this.long);
+    });
   },
   computed: {
     get_total() {
       let sum = 0;
       for (let i = 0; i < this.carts.length; i++) {
         sum +=
-          parseFloat(this.carts[i].product.product_price) *
+          parseFloat(this.carts[i].product.price) *
           parseFloat(this.carts[i].quantity);
       }
       sum += this.shipping_cost;
@@ -194,7 +222,7 @@ export default {
     },
     get_shipping_cost() {
       let max = 20000,
-        min = 100000;
+        min = 50000;
       this.shipping_cost = Math.random() * (max - min) + min;
       return this.shipping_cost.toFixed(0).toLocaleString();
     },
@@ -233,16 +261,17 @@ export default {
 
           let quantity = tempOrderDetail.quantity;
           tempOrderDetail = tempOrderDetail.product;
+          tempOrderDetail.ProductID = tempOrderDetail.id;
 
+          delete tempOrderDetail.id;
           delete tempOrderDetail.shop_id;
           delete tempOrderDetail.product_category;
 
-          tempOrderDetail.product_quantity = quantity;
+          tempOrderDetail.Quantity = quantity;
           orderDetail.push(tempOrderDetail);
 
           // console.log('temp order detail : '+ JSON.stringify(tempOrderDetail));
-          totalOrder +=
-            curOrder[j].product.product_price * curOrder[j].quantity;
+          totalOrder += curOrder[j].product.price * curOrder[j].quantity;
         }
 
         console.log("Total order " + i + " " + totalOrder);
@@ -252,17 +281,18 @@ export default {
 
         const data = JSON.stringify({
           shop_id: uniqueShopID[i],
-          customer_id: "",
-          shipper_id: "",
-          ship_info: "",
+          customer_id: this.customer_id,
+          shipper_id: this.shipper_id[0],
+          ship_info: this.address,
           status: 0,
-          total: totalOrder,
-          shipper_fee: this.shipping_cost / uniqueShopID.length,
-          created_at: "",
-          updated_at: "",
+          total: totalOrder + Math.round(this.shipping_cost),
+          shipper_fee: Math.round(this.shipping_cost),
+          created_at: new Date(),
+          updated_at: new Date(),
           order_detail: orderDetail,
         });
-
+        
+        console.log('order data before create' + data);
         OrderService.createOrder(data);
       }
 
@@ -278,11 +308,13 @@ export default {
     locatorButtonPressed() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          console.log("Lat : " + position.coords.latitude);
+          console.log("Long : " + position.coords.longitude);
+
           this.getStreetAddressFrom(
             position.coords.latitude,
             position.coords.longitude
           );
-          console.log(this.address);
         },
 
         (error) => {
@@ -290,28 +322,46 @@ export default {
         }
       );
     },
-    async getStreetAddressFrom(lat, long) {
-      try {
-        var {
-          data,
-        } = await Axios.get(
-          "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
-            lat +
-            "," +
-            long +
-            "&key={AIzaSyAHzPUAWlDVC61Hqo1cc8g7ErkYnXGX-qE}",
-          { withCredentials: false }
+    getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+      var R = 6371;
+      var dLat = (Math.PI / 180) * (lat2 - lat1);
+      var dLon = (Math.PI / 180) * (lon2 - lon1);
+      var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos((Math.PI / 180) * lat1) *
+          Math.cos((Math.PI / 180) * lat2) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      var d = R * c; // Distance in km
+
+      console.log("distance : " + d + " km");
+      return d;
+    },
+    findShipper() {
+      for (let i = 0; i < this.shipper_list.length; i++) {
+        let distance = this.getDistanceFromLatLonInKm(
+          this.lati,
+          this.long,
+          this.shipper_list[i].coor.lat,
+          this.shipper_list[i].coor.long
         );
 
-        if (data.error_message) {
-          console.log(data.error_message);
-        } else {
-          this.address = data.results[0].formatted_address;
-        }
-      } catch (error) {
-        console.log(error.message);
+        this.shipper_list[i].distance = distance;
+        console.log(JSON.stringify(this.shipper_list[i]));
       }
+      this.shipper_list.sort(function (a, b) {
+        return parseFloat(a.distance) - parseFloat(b.distance);
+      });
+
+      this.shipper_list = this.shipper_list.filter((shipper, idx) => idx < 3);
+      this.is_find_shipper = 1;
     },
+    showCheckBoxVal() {
+      console.log(JSON.stringify(this.shipper_id[0]));
+      this.get_shipping_cost();
+    }
   },
+
 };
 </script>

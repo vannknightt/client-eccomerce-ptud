@@ -11,7 +11,6 @@ import OrderDetail from '@/components/Order/OrderDetail';
 import NotFound from '@/components/error-pages/NotFound';
 
 Vue.use(Router)
-
 export default new Router({
   mode:'history',
   routes: [

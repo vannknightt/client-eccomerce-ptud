@@ -18,6 +18,7 @@
             <div class="card-body row">
               <div class="col">
                 <strong>Đơn hàng được khởi tạo</strong> <br />
+                <p>{{ order.created_at }}</p>
               </div>
               <div class="col">
                 <strong>Đã xác nhận bởi cửa hàng</strong> <br />
@@ -27,7 +28,7 @@
                 <strong>Giao hàng thành công</strong> <br />
               </div>
 
-              <div v-if="(getStatus() - 1) == -1" class="col">
+              <div v-if="getStatus() - 1 == -1" class="col">
                 <strong></strong> <br />
               </div>
             </div>
@@ -41,14 +42,11 @@
               <span class="icon"> <i class="fa fa-check"></i> </span>
             </div>
 
-            <div v-if="(getStatus() - 1) == -1" class="step active">
+            <div v-if="getStatus() - 1 == -1" class="step active">
               <span class="icon"> <i class="fa fa-truck"></i> </span>
               <span class="text"> Đơn hàng đã bị hủy </span>
             </div>
-
           </div>
-
-        
         </div>
       </article>
     </div>
@@ -72,31 +70,27 @@
               <td>
                 <p>Cửa hàng {{ order.shop_id }}</p>
               </td>
-              <tr v-for="detail in order.order_detail" :key="detail.product_id">
+              <tr v-for="detail in order.order_detail" :key="detail.productID">
                 <td>
-                  <img :src="detail.image_path" />
+                  <img :src="detail.imagePath" />
                 </td>
-                <td>{{ detail.product_name }}</td>
-                <td>₫{{ detail.product_price.toLocaleString() }}</td>
+                <td>{{ detail.name }}</td>
+                <td>₫{{ detail.price.toLocaleString() }}</td>
                 <td>
-                  <input
-                    type="text"
-                    :value="detail.product_quantity"
-                    readonly
-                  />
+                  <input type="text" :value="detail.quantity" readonly />
                 </td>
                 <td style="color: red">
-                  ₫{{
-                    (
-                      detail.product_quantity * detail.product_price
-                    ).toLocaleString()
-                  }}
+                  ₫{{ (detail.quantity * detail.price).toLocaleString() }}
                 </td>
               </tr>
             </tbody>
           </table>
           <br />
-
+          <div style="float: right">
+            <th>Giá vận chuyển : ₫{{ order.shipper_fee.toLocaleString() }}</th>
+          </div>
+          <br />
+          <br />
           <div style="float: right">
             <th>Tổng Tiền : ₫{{ order.total.toLocaleString() }}</th>
           </div>
@@ -329,6 +323,7 @@ export default {
       OrderService.updateOrderStatus(this.id, -1).then((response) => {
         this.order = response.data;
         console.log(JSON.stringify(this.order));
+        window.location.reload();
       });
     },
   },

@@ -26,7 +26,7 @@
             <div class="row">
               <div class="col-lg-5 col-md-5 col-sm-6">
                 <div class="imgbox">
-                  <img :src="product.imagepath" class="img-responsive" />
+                  <img :src="product.imagePath" class="img-responsive" />
                 </div>
               </div>
               <div class="col-lg-7 col-md-7 col-sm-6">
@@ -39,6 +39,8 @@
                   which don't look even slightly believable.but the majority
                   have suffered alteration in some form,by injected humour
                 </p>
+
+                
 
                 <h2 class="mt-5">Giá tiền: ₫{{ product.price.toLocaleString() }}</h2>
                 <button
@@ -111,6 +113,7 @@
                   recently with desktop publishing software like Aldus PageMaker
                   including versions of Lorem Ipsum.
                 </p>
+                <p>{{comment.customercmt}}</p>
                 <p>
                   <a class="float-right btn btn-outline-primary ml-2">
                     <i class="fa fa-reply"></i> Reply</a

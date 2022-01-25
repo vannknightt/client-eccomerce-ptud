@@ -48,13 +48,13 @@
         <div
           class="col-lg-4 d-flex align-items-stretch"
           v-for="product in filterProduct"
-          v-bind:key="product.product_id"
+          v-bind:key="product.id"
         >
           <div class="card">
-            <h6 class="card-header">{{ product.product_name }}</h6>
+            <h6 class="card-header">{{ product.name }}</h6>
             <div class="card-body" style="height: 150px">
               <img
-                :src="product.image_path"
+                :src="product.imagePath"
                 class="img-circle"
                 alt="Services"
               />
@@ -62,12 +62,12 @@
             <br />
             <div class="card-footer">
               <span class="text-muted"
-                >₫{{ product.product_price.toLocaleString() }}</span
+                >₫{{ product.price.toLocaleString() }}</span
               >
               <router-link
                 :to="{
                   name: 'ProductDetail',
-                  params: { id: product.product_id },
+                  params: { id: product.id },
                 }"
                 class="btn btn-secondary btn-sm float-right"
                 >Xem mặt hàng
@@ -153,7 +153,7 @@ export default {
   computed: {
     filterProduct() {
       return this.products.filter((product) =>
-        product.product_name
+        product.name
           .toLowerCase()
           .includes(this.searchvalue.toLowerCase())
       );
@@ -163,17 +163,17 @@ export default {
     sortprop() {
       if (this.sortvalue === "asc") {
         this.products.sort((a, b) =>
-          a.product_price < b.product_price ? -1 : 1
+          a.price < b.price ? -1 : 1
         );
       } else if (this.sortvalue === "desc") {
         this.products.sort((a, b) =>
-          a.product_price > b.product_price ? -1 : 1
+          a.price > b.price ? -1 : 1
         );
       }
     },
 
-    addToCart(product_id) {
-      CartService.addToCart(product_id).then((response) => {
+    addToCart(id) {
+      CartService.addToCart(id).then((response) => {
         this.cart_length = response.data.length;
         console.log("product list (cart-length): " + this.cart_length);
       });

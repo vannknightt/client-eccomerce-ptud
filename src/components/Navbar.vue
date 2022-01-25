@@ -2,11 +2,11 @@
   <b-navbar toggleable="lg" type="dark" variant="info" fixed="top">
     <b-navbar-brand :to="{ name: 'Home' }">Home</b-navbar-brand>
     <b-navbar-nav>
-      <b-nav-item :to="{ name: 'ProductList' }">Products</b-nav-item>
+      <b-nav-item  :to="{ name: 'ProductList' }">Products</b-nav-item>
     </b-navbar-nav>
 
     <b-navbar-nav>
-      <b-nav-item :to="{ name: 'OrderList' }">Đơn hàng</b-nav-item>
+      <b-nav-item  :to="{ name: 'OrderList' }">Đơn hàng</b-nav-item>
     </b-navbar-nav>
 
     <b-navbar-brand
@@ -27,6 +27,9 @@ export default {
     navbar_carts_length: function () {
       return this.pass_carts_length;
     },
+    is_customer() {
+      return this.$route.query.type === 'customer'
+    }
   },
 };
 </script>

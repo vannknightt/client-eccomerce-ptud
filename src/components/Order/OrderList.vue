@@ -36,18 +36,18 @@
               </thead>
               <tbody>
                 <td>
-                  <img :src="order.order_detail[0].image_path" />
+                  <img :src="order.order_detail[0].imagePath" />
                 </td>
-                <td>{{ order.order_detail[0].product_name }}</td>
+                <td>{{ order.order_detail[0].name }}</td>
                 <td>
-                  ₫{{ order.order_detail[0].product_price.toLocaleString() }}
+                  ₫{{ order.order_detail[0].price.toLocaleString() }}
                 </td>
-                <td>{{ order.order_detail[0].product_quantity }}</td>
+                <td>{{ order.order_detail[0].quantity }}</td>
                 <td>
                   ₫{{
                     (
-                      order.order_detail[0].product_price *
-                      order.order_detail[0].product_quantity
+                      order.order_detail[0].price *
+                      order.order_detail[0].quantity
                     ).toLocaleString()
                   }}
                 </td>
@@ -105,7 +105,7 @@ export default {
   created() {
     OrderService.getOrder().then((response) => {
       this.orderList = response.data;
-      // console.log(JSON.stringify(this.orderList));
+      console.log(JSON.stringify(this.orderList));
     });
 
     CartService.getCart().then((response) => {

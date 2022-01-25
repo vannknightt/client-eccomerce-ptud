@@ -6,8 +6,8 @@ Axios.defaults.withCredentials = true;
 
 const RESOURCE_NAME = '/api/cart';
 
-const pathasp = 'https://localhost:44344'
-//const pathasp = 'https://aspnet-ecommerce-ptud.herokuapp.com'
+// const pathasp = 'https://localhost:44344'
+const pathasp = 'https://aspnet-ecommerce-ptud.herokuapp.com'
 
 export default {
   getCart() {

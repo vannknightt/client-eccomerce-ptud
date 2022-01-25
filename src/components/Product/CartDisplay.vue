@@ -55,20 +55,20 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="cartitem in carts" :key="cartitem.product.product_id">
+              <tr v-for="cartitem in carts" :key="cartitem.product.id">
                 <td>
                   <input
                     type="checkbox"
                     v-model="is_checked"
-                    :value="cartitem.product.product_id"
+                    :value="cartitem.product.id"
                     @change="showCheckBoxVal()"
                   />
                 </td>
                 <td>
-                  <img :src="cartitem.product.image_path" />
+                  <img :src="cartitem.product.imagePath" />
                 </td>
-                <td>{{ cartitem.product.product_name }}</td>
-                <td>₫{{ cartitem.product.product_price.toLocaleString() }}</td>
+                <td>{{ cartitem.product.name }}</td>
+                <td>₫{{ cartitem.product.price.toLocaleString() }}</td>
                 <td>
                   <input
                     type="number"
@@ -76,7 +76,7 @@
                     step="1"
                     @change="
                       updateCartQuantity(
-                        cartitem.product.product_id,
+                        cartitem.product.id,
                         $event.target.value
                       )
                     "
@@ -85,13 +85,13 @@
                 </td>
                 <td style="color: red">
                   ₫{{
-                    calcPrice(cartitem.quantity, cartitem.product.product_price)
+                    calcPrice(cartitem.quantity, cartitem.product.price)
                   }}
                 </td>
                 <td>
                   <b-button
                     variant="danger"
-                    @click="removeItem(cartitem.product.product_id)"
+                    @click="removeItem(cartitem.product.id)"
                     >Xóa</b-button
                   >
                 </td>
@@ -188,9 +188,9 @@ export default {
       console.log("checked : " + this.is_checked);
       let sum = 0;
       for (let i = 0; i < this.carts.length; i++) {
-        if (this.is_checked.includes(this.carts[i].product.product_id)) {
+        if (this.is_checked.includes(this.carts[i].product.id)) {
           sum +=
-            parseFloat(this.carts[i].product.product_price) *
+            parseFloat(this.carts[i].product.price) *
             parseFloat(this.carts[i].quantity);
         }
       }
@@ -198,7 +198,7 @@ export default {
     },
     sendOrder() {
       for (let i = 0; i < this.carts.length; i++) {
-        if (this.is_checked.includes(this.carts[i].product.product_id)) {
+        if (this.is_checked.includes(this.carts[i].product.id)) {
           this.checked_cart.push(this.carts[i]);
         }
       }
