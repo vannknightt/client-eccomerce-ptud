@@ -1,36 +1,25 @@
-import axiosClient from "./axiosClient";
+import Axios from 'axios';
 
-const url = "https://ptud-dotnet-server.herokuapp.com/api/Order";
-const javaUrl = "https://ptud-java-server.herokuapp.com/api/order";
-const shipperId = localStorage.getItem("shipperId").replace("str", "");
-const shipperService = {
-  create(payload) {
-    return axiosClient.post(`${url}/Create`, payload);
+const RESOURCE_NAME = '/api/order';
+// const pathasp = 'https://localhost:44344'
+// const pathjava = 'http://localhost:8080'
+
+const pathasp = 'https://aspnet-ecommerce-ptud.herokuapp.com'
+const pathjava = 'https://java-ecommerce-ptud.herokuapp.com'
+
+export default {
+  getOrder() {
+    return Axios.get(pathasp + RESOURCE_NAME);
   },
-  update(id, payload) {
-    return axiosClient.put(`${url}/Update/${id}`, payload);
+  getOrderId(id) {
+    return Axios.get(pathasp + RESOURCE_NAME+ '/' + id);
   },
-  getAll() {
-    return axiosClient.post(`${url}/GetAll`, { shipper_id: shipperId });
+  createOrder(order) {
+    return Axios.post(pathasp + RESOURCE_NAME, order,
+        { headers: {'Content-Type': 'application/json'}});
   },
-  getDetail(id) {
-    return axiosClient.get(`${url}/GetDetail/${id}`);
+  updateOrderStatus(id, status) {
+    return Axios.put(pathjava + RESOURCE_NAME 
+      + '/' + id + '/' + status);
   },
-  delete(id) {
-    return axiosClient.delete(`${url}/Delete/${id}`);
-  },
-  updateStatus(id, status) {
-    return axiosClient.put(`${url}/UpdateStatus?id=${id}&status=${status}`);
-  },
-  javaUpdateStatus(id, status) {
-    return axiosClient.post(`${javaUrl}/${id}/status/${status}`);
-  },
-  getOTP(phone) {
-    return axiosClient.post(`${url}/GetOTP`, { phone: phone });
-  },
-  verifyOTP(id, otp) {
-    return axiosClient.post(`${url}/VerifyOTP`, { id: id, otp: otp });
-  }
 };
-
-export default shipperService;

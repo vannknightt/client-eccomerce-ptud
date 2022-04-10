@@ -11,23 +11,16 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 import Axios from 'axios';
 
 
-import Antd from "ant-design-vue";
-import "ant-design-vue/dist/antd.css";
-
-import { store } from "./store/store";
-
 Vue.config.productionTip = false;
 Axios.defaults.baseURL = process.env.API_ENDPOINT;
 
 Vue.use(BootstrapVue);
 Vue.use(Vuex);
-Vue.use(Antd);
 
 /* eslint-disable no-new */
 new Vue({
   el: "#app",
   router,
-  store,
   components: { App },
   template: "<App/>"
 });

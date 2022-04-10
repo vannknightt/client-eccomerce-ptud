@@ -56,7 +56,7 @@
             <div class="container">
               <div class="text-right">
 
-                <router-link :to="{name: 'CusOrderDetail', params: {id: order.id}}">
+                <router-link :to="{name: 'OrderDetail', params: {id: order.id}}">
                 <b-button variant="primary">Xem chi tiết</b-button>
                 </router-link>
               </div>
@@ -85,12 +85,12 @@ img {
 
 
 <script>
-import OrderService from "@/api-services/cusOrderService";
+import OrderService from "@/api-services/OrderService";
 import CartService from "@/api-services/CartService";
 import Navbar from "@/components/Navbar";
 
 export default {
-  name: "CusOrderList",
+  name: "OrderList",
   components: {
     Navbar,
   },

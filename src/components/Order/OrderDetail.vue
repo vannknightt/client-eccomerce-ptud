@@ -284,12 +284,12 @@ p {
 
 
 <script>
-import OrderService from "@/api-services/cusOrderService";
+import OrderService from "@/api-services/OrderService";
 import CartService from "@/api-services/CartService";
 import Navbar from "@/components/Navbar";
 
 export default {
-  name: "CusOrderDetail",
+  name: "OrderDetail",
   components: {
     Navbar,
   },

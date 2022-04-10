@@ -24,20 +24,6 @@ export default {
   components: {
     Navbar
   },
-  computed: {
-    ...mapState("shipper", {
-      isLoading: state => state.isLoading
-    })
-  },
-  mounted() {
-    this.$message.config({
-      top: "56px",
-      duration: 2,
-      maxCount: 3
-    });
-
-    localStorage.removeItem('accountType')
-  }
 };
 </script>
 
