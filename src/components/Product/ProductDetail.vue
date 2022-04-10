@@ -275,7 +275,7 @@ export default {
       const data = JSON.stringify({
         customername: "Anonymous",
         customeravatar:
-          "https://res.cloudinary.com/dunbjnt9i/image/upload/v1642500432/ecommerce/avatar/user_xfjtix.webp",
+          "https://cdn-icons-png.flaticon.com/512/194/194938.png",
         customercmt: comment,
         customerrating: rating,
         date: "",
