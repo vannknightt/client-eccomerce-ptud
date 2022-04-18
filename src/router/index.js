@@ -9,6 +9,7 @@ import Checkout from '@/components/Product/Checkout';
 
 import OrderList from '@/components/Order/OrderList';
 import OrderDetail from '@/components/Order/OrderDetail';
+import Success from '@/components/Order/Success';
 
 import NotFound from '@/components/error-pages/NotFound';
 
@@ -50,6 +51,11 @@ export default new Router({
       path: '/order/detail/:id',
       name: 'OrderDetail',
       component: OrderDetail
+    },
+    {
+      path: '/success',
+      name: 'Success',
+      component: Success
     },
     {
       path: '*',

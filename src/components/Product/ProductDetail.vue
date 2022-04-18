@@ -1,8 +1,12 @@
 <template>
   <div>
-    <body>
-      <navbar :pass_carts_length="cart_length" />
-      <link
+    <navbar :pass_carts_length="cart_length" />
+    <link
+      href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
+    <!-- <link
         rel="stylesheet"
         href="path/to/font-awesome/css/font-awesome.min.css"
       />
@@ -10,14 +14,8 @@
       <link
         href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
         rel="stylesheet"
-      />
-
-      <link
-        href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        rel="stylesheet"
-        id="bootstrap-css"
-      />
-
+      /> -->
+    <body>
       <br />
       <br />
       <div class="container">
@@ -40,14 +38,14 @@
                   have suffered alteration in some form,by injected humour
                 </p>
 
-                
-
-                <h2 class="mt-5">Giá tiền: ₫{{ product.price.toLocaleString() }}</h2>
+                <h2 class="mt-5">
+                  Giá tiền: ₫{{ product.price.toLocaleString() }}
+                </h2>
                 <button
                   class="btn btn-danger btn-rounded mr-1"
                   @click="addToCart(product.id)"
                 >
-                  <i class="fa fa-shopping-cart"> Thêm vào giỏ hàng</i>
+                Thêm vào giỏ hàng
                 </button>
 
                 <button class="btn btn-primary btn-rounded">Mua ngay</button>
@@ -113,7 +111,7 @@
                   recently with desktop publishing software like Aldus PageMaker
                   including versions of Lorem Ipsum.
                 </p>
-                <p>{{comment.customercmt}}</p>
+                <p>{{ comment.customercmt }}</p>
                 <p>
                   <a class="float-right btn btn-outline-primary ml-2">
                     <i class="fa fa-reply"></i> Reply</a
@@ -258,7 +256,7 @@ export default {
       CartService.addToCart(product_id).then((response) => {
         this.cart_length = response.data.length;
         console.log("product list (cart-length): " + this.cart_length);
-        console.log('add to cart ' + JSON.stringify(response.data));
+        console.log("add to cart " + JSON.stringify(response.data));
       });
     },
     getRating(review_id) {
@@ -274,18 +272,16 @@ export default {
 
       const data = JSON.stringify({
         customername: "Anonymous",
-        customeravatar:
-          "https://cdn-icons-png.flaticon.com/512/194/194938.png",
+        customeravatar: "https://cdn-icons-png.flaticon.com/512/194/194938.png",
         customercmt: comment,
         customerrating: rating,
         date: "",
       });
 
       ProductService.addComment(this.id, data).then((response) => {
-      this.product = response.data;
-      // console.log(this.product);
-    });
-
+        this.product = response.data;
+        // console.log(this.product);
+      });
     },
     setRating(ratingCount) {
       //console.log(ratingCount)

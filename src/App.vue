@@ -1,6 +1,5 @@
 <template>
   <b-container id="app">
-    <a-spin tip="Loading..." :spinning="isLoading">
       <b-row>
         <b-col>
           <navbar />
@@ -11,7 +10,6 @@
           <router-view />
         </b-col>
       </b-row>
-    </a-spin>
   </b-container>
 </template>
 

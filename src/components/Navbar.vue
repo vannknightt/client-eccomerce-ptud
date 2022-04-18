@@ -8,20 +8,19 @@
       <b-nav-item :to="{ name: 'OrderList' }">Đơn hàng</b-nav-item>
     </b-navbar-nav>
 
-    <b-navbar-brand 
-    class="ml-auto"
-    :to="{name: 'CartDisplay'}"
+    <b-navbar-brand class="ml-auto" :to="{ name: 'CartDisplay' }"
       >Giỏ hàng
       <span>({{ navbar_carts_length }})</span>
     </b-navbar-brand>
   </b-navbar>
 </template>
 <script>
+import CartService from "@/api-services/CartService";
+
 export default {
   name: "Navbar",
   props: ["pass_carts_length"],
-  navbar_carts_length: 0,
-
+  navbar_carts_length: 0, 
   computed: {
     navbar_carts_length: function () {
       return this.pass_carts_length;

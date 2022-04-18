@@ -12,16 +12,17 @@
 
     <div class="row">
       <div class="table-responsive">
-        <div
-          
-          v-for="order in orderList"
-          v-bind:key="order.id"
-        >
+        <div v-for="order in orderList" v-bind:key="order.id">
           <b-card title="" header-tag="header" footer-tag="footer">
             <template #header>
-              <h6 class="mb-0" align="left">
-                <b>Đơn hàng {{ order.id }}</b>
-              </h6>
+              <div>
+                <h6 class="mb-0" align="left">
+                  <b>Mã đơn hàng {{ order.id }}</b>
+                </h6>
+                <h6 class="mb-0" align="right">
+                  <b>Ngày đặt {{ order.created_at }}</b>
+                </h6>
+              </div>
             </template>
 
             <table class="table table-striped">
@@ -34,14 +35,12 @@
                   <th>Thành tiền</th>
                 </tr>
               </thead>
-              <tbody v-if="order.order_detail && order.order_detail.length > 0 ">
+              <tbody v-if="order.order_detail && order.order_detail.length > 0">
                 <td>
                   <img :src="order.order_detail[0].imagePath" />
                 </td>
                 <td>{{ order.order_detail[0].name }}</td>
-                <td>
-                  ₫{{ order.order_detail[0].price.toLocaleString() }}
-                </td>
+                <td>₫{{ order.order_detail[0].price.toLocaleString() }}</td>
                 <td>{{ order.order_detail[0].quantity }}</td>
                 <td>
                   ₫{{
@@ -55,9 +54,10 @@
             </table>
             <div class="container">
               <div class="text-right">
-
-                <router-link :to="{name: 'OrderDetail', params: {id: order.id}}">
-                <b-button variant="primary">Xem chi tiết</b-button>
+                <router-link
+                  :to="{ name: 'OrderDetail', params: { id: order.id } }"
+                >
+                  <b-button variant="primary">Xem chi tiết</b-button>
                 </router-link>
               </div>
             </div>
@@ -105,7 +105,7 @@ export default {
   created() {
     OrderService.getOrder().then((response) => {
       this.orderList = response.data;
-      console.log('created order ' + (this.orderList));
+      console.log("created order " + this.orderList);
     });
 
     CartService.getCart().then((response) => {

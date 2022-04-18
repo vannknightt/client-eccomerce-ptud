@@ -1,5 +1,7 @@
 <template>
   <div>
+    <navbar :pass_carts_length="cart_length" />
+
     <link
       href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
       rel="stylesheet"
@@ -57,9 +59,9 @@
       v-model="address"
     />
 
-    <button class="btn btn-success" @click="locatorButtonPressed()">
+    <!-- <button class="btn btn-success" @click="locatorButtonPressed()">
       Lấy vị trí hiện tại
-    </button>
+    </button> -->
     <br />
     <br />
     <h3 align="left">Chọn đơn vị vận chuyển</h3>
@@ -76,7 +78,7 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th>></th>
+              <th></th>
               <th>Ảnh đại diện</th>
               <th>Tên</th>
               <th>Số điện thoại</th>
@@ -88,7 +90,7 @@
             <tr v-for="shipper in shipper_list" v-bind:key="shipper.id">
               <td>
                 <input
-                  type="checkbox"
+                  type="radio"
                   v-model="shipper_id"
                   :value="shipper.id"
                   @change="showCheckBoxVal()"
@@ -100,7 +102,9 @@
               <td>{{ shipper.name }}</td>
               <td>{{ shipper.phone }}</td>
               <td>{{ shipper.distance.toFixed(3) }} km</td>
-              <td>{{ Math.round(5000 * shipper.distance).toLocaleString()}}₫</td>
+              <td>
+                {{ Math.round(5000 * shipper.distance).toLocaleString() }}₫
+              </td>
             </tr>
           </tbody>
         </table>
@@ -131,30 +135,26 @@ img {
   width: 75px;
   height: 75px;
 }
-#map {
-  height: 400px;
-  width: 600px;
-}
 </style>
 
-<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=
-    AIzaSyC3C6sepP8uOS9lFDwK67Hn66AMB-Dh2AY
-    &callback=initMap">
-</script>
 
 <script>
 import CartService from "@/api-services/CartService";
 import ShipperService from "@/api-services/ShipperService";
 import OrderService from "@/api-services/OrderService";
+import Navbar from "@/components/Navbar";
+import Success from "@/components/Order/Success";
+
+import router from "@/router/index";
 
 import Axios from "axios";
 
 export default {
   name: "Checkout",
-  components: {},
+  components: { Navbar },
   data() {
     return {
+      cart_length: 0,
       carts: [],
       checked_cart: [],
       total: 0,
@@ -202,6 +202,11 @@ export default {
       console.log("mounted Lat : " + this.lati);
       console.log("mounted Long : " + this.long);
     });
+
+    CartService.getCart().then((response) => {
+      this.cart_length = response.data.length;
+      console.log(this.cart_length);
+    });
   },
   computed: {
     get_total() {
@@ -212,8 +217,8 @@ export default {
           parseFloat(this.carts[i].quantity);
       }
       sum += this.shipping_cost;
-      this.total = sum;
-      return Math.round(this.total).toLocaleString();
+      // this.total = sum;
+      return Math.round(sum).toLocaleString();
     },
   },
   methods: {
@@ -291,19 +296,34 @@ export default {
           updated_at: new Date(),
           order_detail: orderDetail,
         });
-        
-        console.log('order data before create' + data);
-        OrderService.createOrder(data);
+
+        console.log("order data before create" + data);
+
+        const execSendOrder = async () => {
+          console.log("execute sending order");
+          await OrderService.createOrder(data);
+        };
+        execSendOrder();
       }
 
-      for (let i = 0; i < this.checked_cart.length; i++) {
-        CartService.removeCartItem(this.checked_cart[i]);
-      }
+      console.log("remove cart item");
+      const removeCartItem = async () => {
+        for (let i = 0; i < this.checked_cart.length; i++) {
+          console.log('in loop remove cart item');
+          await CartService.removeCartItem(this.checked_cart[i]);
+        }
+      };
+      removeCartItem();
+
+      console.log("After remove cart item");
       this.carts = [];
 
       CartService.getCart().then((response) => {
         this.cart_length = this.carts.length;
+        console.log('cart length : ' + this.cart_length);
       });
+
+      router.push("Success");
     },
     locatorButtonPressed() {
       navigator.geolocation.getCurrentPosition(
@@ -360,8 +380,7 @@ export default {
     showCheckBoxVal() {
       console.log(JSON.stringify(this.shipper_id[0]));
       this.get_shipping_cost();
-    }
+    },
   },
-
 };
 </script>

@@ -84,9 +84,7 @@
                   />
                 </td>
                 <td style="color: red">
-                  ₫{{
-                    calcPrice(cartitem.quantity, cartitem.product.price)
-                  }}
+                  ₫{{ calcPrice(cartitem.quantity, cartitem.product.price) }}
                 </td>
                 <td>
                   <b-button
@@ -106,12 +104,16 @@
     </div>
     <br />
     <!-- <button class="btn btn-success" @click="sendOrder()">Gửi đơn hàng</button> -->
-
-    <router-link
-      :to="{ name: 'Checkout', query: { checked_cart: this.is_checked } }"
-    >
-      <button class="btn btn-success">Mua hàng</button>
-    </router-link>
+    <div v-if="this.is_checked.length > 0">
+      <router-link
+        :to="{ name: 'Checkout', query: { checked_cart: this.is_checked } }"
+      >
+        <button class="btn btn-success">Mua hàng</button>
+      </router-link>
+    </div>
+    <div v-if="is_checked.length <= 0">
+      <button class="btn btn-success" disabled>Mua hàng</button>
+    </div>
   </div>
 </template>
 
@@ -147,7 +149,6 @@ export default {
       this.cart_length = this.carts.length;
       // console.log('cart display ' + this.carts.length)
       //console.log('cart display ' + JSON.stringify(this.carts));
-
     });
   },
 
@@ -186,6 +187,7 @@ export default {
     showCheckBoxVal() {
       // console.log("checked : " + this.is_checked.length);
       console.log("checked : " + this.is_checked);
+      console.log("checked-length : " + this.is_checked.length);
       let sum = 0;
       for (let i = 0; i < this.carts.length; i++) {
         if (this.is_checked.includes(this.carts[i].product.id)) {
