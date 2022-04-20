@@ -18,7 +18,7 @@
             <div class="card-body row">
               <div class="col">
                 <strong>Đơn hàng được khởi tạo</strong> <br />
-                <p>{{ order.created_at }}</p>
+                <p>{{ getDate(order.created_at) }}</p>
               </div>
               <div class="col">
                 <strong>Đã xác nhận bởi cửa hàng</strong> <br />
@@ -326,6 +326,15 @@ export default {
         window.location.reload();
       });
     },
+    getDate(date) {
+      let newDate = new Date(date);
+      console.log('newdate ' + newDate);
+
+      let timeConv = newDate.toLocaleDateString() + 
+      ' ' + newDate.toLocaleTimeString();
+      console.log('time conv ' + timeConv)
+      return timeConv;
+    }
   },
 };
 </script>

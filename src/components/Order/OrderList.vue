@@ -16,12 +16,12 @@
           <b-card title="" header-tag="header" footer-tag="footer">
             <template #header>
               <div>
-                <h6 class="mb-0" align="left">
-                  <b>Mã đơn hàng {{ order.id }}</b>
-                </h6>
-                <h6 class="mb-0" align="right">
-                  <b>Ngày đặt {{ order.created_at }}</b>
-                </h6>
+                <div class="div-left">
+                  <b>Mã đơn hàng : {{ order.id }}</b>
+                </div>
+                <div class="div-right">
+                  <b>Ngày đặt : {{ getDate(order.created_at)}}</b>
+                </div>
               </div>
             </template>
 
@@ -81,6 +81,14 @@ img {
   height: 100px;
   width: 100px;
 }
+.div-left{
+    float:left;
+    padding-left:10px;
+}
+.div-right{
+    float:right;
+    padding-right:10px;
+}
 </style>
 
 
@@ -92,7 +100,7 @@ import Navbar from "@/components/Navbar";
 export default {
   name: "OrderList",
   components: {
-    Navbar,
+    Navbar
   },
 
   data() {
@@ -113,6 +121,17 @@ export default {
       //   console.log(this.cart_length);
     });
   },
+  methods: {
+    getDate(date) {
+      let newDate = new Date(date);
+      console.log('newdate ' + newDate);
+
+      let timeConv = newDate.toLocaleDateString() + 
+      ' ' + newDate.toLocaleTimeString();
+      console.log('time conv ' + timeConv)
+      return timeConv;
+    }
+  }
 };
 </script>
 
